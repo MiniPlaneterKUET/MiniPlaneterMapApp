@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">MiniPlaneterMap</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_main_activity">MainActivity</string>
+
+    <string name="auto_complete_colors">Auto Complete Colors...</string>
+    <string name="multi_auto_complete_colors">Multi Auto Complete Colors...</string>
+
+    <string-array name="locationList">
+        <item>Amar Ekushey Hall Canteen</item>
+        <item>Amar Ekushey Hall</item>
+        <item>Central Mosque</item>
+        <item>Central Library</item>
+        <item>Department of ME</item>
+        <item>Janata Bank</item>
+        <item>Cafeteria</item>
+        <item>Post Office</item>
+        <item>Main Gate</item>
+    </string-array>
+
+    <string-array name="colorList">
+        <item >Black</item>
+        <item >White</item>
+        <item >Red</item>
+        <item >Blue</item>
+        <item >Yellow</item>
+        <item >Green</item>
+        <item >Brown</item>
+        <item >Pink</item>
+        <item >Orange</item>
+        <item >Purple</item>
+    </string-array>
+</resources>
