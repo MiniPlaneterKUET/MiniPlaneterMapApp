@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
