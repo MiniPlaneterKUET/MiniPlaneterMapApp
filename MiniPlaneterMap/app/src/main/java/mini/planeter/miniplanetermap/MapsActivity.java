@@ -30,12 +30,15 @@ public class MapsActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    //Server Key
+    private static final String SERVER_KEY = "AIzaSyBfDZ9ubAvNTmSsjLABcNP7-ZGiOVkSsqs";
+
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private static final long UPDATE_INTERVAL = 60000;  /* 60 secs */
+    private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
 
     /*
      * Define a request code to send to Google Play services This code is
