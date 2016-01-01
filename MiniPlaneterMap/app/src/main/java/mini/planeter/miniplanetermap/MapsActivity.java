@@ -42,6 +42,9 @@ public class MapsActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, DirectionCallback, OnMapReadyCallback {
 
+    //TAG
+    private static final String TAG = "MapsActivity";
+
     //Server Key
     private static final String SERVER_KEY = "AIzaSyBfDZ9ubAvNTmSsjLABcNP7-ZGiOVkSsqs";
 
@@ -71,6 +74,13 @@ public class MapsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_maps);
         btnRequestDirection = (Button) findViewById(R.id.requestDirection);
 
+        Bundle bundle = getIntent().getExtras();
+        LatLng tempLatLng = (LatLng) bundle.get(MainActivity.PLACE);
+        destination = new LatLng(tempLatLng.latitude, tempLatLng.longitude);
+
+        //Log for debugging
+        Log.i(TAG, "Destination: " + MainActivity.PLACE + " - " + destination.toString());
+
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -86,7 +96,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         PlacesManager man = new PlacesManager();
 
-        destination = new LatLng(man.getLatitude("Department of ME"), man.getLongitude("Department of ME"));
+
 
         btnRequestDirection.setOnClickListener(new View.OnClickListener() {
             @Override
