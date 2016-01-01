@@ -76,12 +76,16 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                PLACE = locationAutoCompleteTextView.getText().toString();
-                PlacesManager placesManager = new PlacesManager();
-                intent.putExtra(PLACE, placesManager.getLocation(PLACE));
+                if (!locationAutoCompleteTextView.getText().toString().isEmpty()) {
+                    Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                    PLACE = locationAutoCompleteTextView.getText().toString();
+                    PlacesManager placesManager = new PlacesManager();
+                    intent.putExtra(PLACE, placesManager.getLocation(PLACE));
 //                intent.putExtra(KEY, VALUE);
-                startActivity(intent);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Enter a Location", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -89,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 locationAutoCompleteTextView.setText(null);
+            }
+        });
+
+        locationAutoCompleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "Current Text: " + locationAutoCompleteTextView.getText().toString().isEmpty());
             }
         });
     }

@@ -94,10 +94,6 @@ public class MapsActivity extends AppCompatActivity implements
         }
 
 
-        PlacesManager man = new PlacesManager();
-
-
-
         btnRequestDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
