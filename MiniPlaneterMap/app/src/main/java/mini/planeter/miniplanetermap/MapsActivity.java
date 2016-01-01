@@ -4,14 +4,23 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,11 +33,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, DirectionCallback, OnMapReadyCallback {
 
     //Server Key
     private static final String SERVER_KEY = "AIzaSyBfDZ9ubAvNTmSsjLABcNP7-ZGiOVkSsqs";
@@ -39,6 +51,9 @@ public class MapsActivity extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private static final long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private static final long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private Button btnRequestDirection;
+
+    private  LatLng destination;
 
     /*
      * Define a request code to send to Google Play services This code is
@@ -46,10 +61,15 @@ public class MapsActivity extends AppCompatActivity implements
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+
+    //Current Location LatLng object
+    protected LatLng currentLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        btnRequestDirection = (Button) findViewById(R.id.requestDirection);
 
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
@@ -62,6 +82,18 @@ public class MapsActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+
+
+        PlacesManager man = new PlacesManager();
+
+        destination = new LatLng(man.getLatitude("Department of ME"), man.getLongitude("Department of ME"));
+
+        btnRequestDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestDirection();
+            }
+        });
 
     }
 
@@ -170,6 +202,11 @@ public class MapsActivity extends AppCompatActivity implements
         if (location != null) {
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+
+            //Storing the location
+            currentLocation = new LatLng(latLng.latitude, latLng.longitude);
+
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
             startLocationUpdates();
@@ -189,7 +226,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     public void onLocationChanged(Location location) {
         // Report to the UI that the location was updated
-        String msg = "Updated Location: " +
+        String msg = "My Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -260,6 +297,42 @@ public class MapsActivity extends AppCompatActivity implements
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
+    }
+
+
+    public void requestDirection() {
+        Snackbar.make(btnRequestDirection, "Direction Requesting...", Snackbar.LENGTH_SHORT).show();
+        GoogleDirection.withServerKey(SERVER_KEY)
+                .from(currentLocation)
+                .to(destination)
+                .transportMode(TransportMode.DRIVING)
+                .execute(this);
+    }
+
+    @Override
+    public void onDirectionSuccess(Direction direction) {
+        Snackbar.make(btnRequestDirection, "Success with status : " + direction.getStatus(), Snackbar.LENGTH_SHORT).show();
+        if (direction.isOK()) {
+            map.addMarker(new MarkerOptions().position(currentLocation));
+            map.addMarker(new MarkerOptions().position(destination));
+
+            ArrayList<LatLng> directionPositionList = direction.getRouteList().get(0).getLegList().get(0).getDirectionPoint();
+            map.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED));
+
+            btnRequestDirection.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDirectionFailure(Throwable t) {
+        Snackbar.make(btnRequestDirection, t.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+//        this.googleMap = googleMap;
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(camera, 13));
     }
 
 }
