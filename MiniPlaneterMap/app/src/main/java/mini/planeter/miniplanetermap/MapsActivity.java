@@ -237,6 +237,12 @@ public class MapsActivity extends AppCompatActivity implements
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
+        //Setting current latlng
+        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        String distance = GPSCalculator.GET_DISTANCE_KM_IN_STRING(currentLatLng, destination);
+        Toast.makeText(this, "Distance in km: " + distance , Toast.LENGTH_LONG).show();
+
     }
 
     /*
