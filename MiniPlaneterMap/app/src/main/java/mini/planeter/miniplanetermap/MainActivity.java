@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     //Clear Button
     private Button clearButton;
 
-    public static String KEY = "Key to success";
-    public static String VALUE = "FUCKING!";
+    public static String KEY = "Sample Key";
+    public static String VALUE = "Sample Value";
 
     //Application Title
     final private static String APPLICATION_TITLE = "Planeter Mapper";
