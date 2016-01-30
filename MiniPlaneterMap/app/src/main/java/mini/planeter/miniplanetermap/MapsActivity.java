@@ -35,6 +35,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MapsActivity extends AppCompatActivity implements
@@ -240,8 +241,14 @@ public class MapsActivity extends AppCompatActivity implements
         //Setting current latlng
         LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        String distance = GPSCalculator.GET_DISTANCE_KM_IN_STRING(currentLatLng, destination);
-        Toast.makeText(this, "Distance in km: " + distance , Toast.LENGTH_LONG).show();
+        double distance = GPSCalculator.GET_DISTANCE_KM(currentLatLng, destination);
+
+        DecimalFormat numberFormat = new DecimalFormat("#0.00");
+        
+        CharSequence distance_message = "Distance: " + String.valueOf(numberFormat.format
+                (distance)) + " km";
+
+        Toast.makeText(this, distance_message , Toast.LENGTH_LONG).show();
 
     }
 
